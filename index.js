@@ -1,10 +1,10 @@
 import express from "express";
 import "dotenv/config";
 import mongoose from "mongoose";
-import documentUploadRoutes from "./routes/db.js";
-import knowledgeUpdateRoutes from "./routes/knowledge.js";
-import queryRoutes from "./routes/query.js";
-import db from "./db/MongoDB.js";
+import documentUploadRoutes from "./src/routes/db.js";
+import knowledgeUpdateRoutes from "./src/routes/knowledge.js";
+import queryRoutes from "./src/routes/query.js";
+import db from "./src/db/MongoDB.js";
 
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 db.once("open", () => {
