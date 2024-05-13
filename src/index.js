@@ -17,6 +17,12 @@ app.use(express.json());
 app.use("/document", documentUploadRoutes);
 app.use("/update-knowledge", knowledgeUpdateRoutes);
 app.use("/query", queryRoutes);
+app.get("/", (req,res)=>{
+  res.status(200).json({
+    message: "Api working!!!",
+  });
+});
+
 
 app.listen(7000, () => {
   console.log("server running on port 7000...");
