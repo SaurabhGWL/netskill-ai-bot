@@ -22,7 +22,6 @@ async function PromptResponse(prompt) {
     ],
   });
 
-  console.log(response?.choices[0]);
   return response?.choices[0];
 }
 

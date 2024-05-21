@@ -1,6 +1,7 @@
 import express from "express";
 import "dotenv/config";
 import mongoose from "mongoose";
+import cors from "cors"; 
 import documentUploadRoutes from "./src/routes/db.js";
 import knowledgeUpdateRoutes from "./src/routes/knowledge.js";
 import queryRoutes from "./src/routes/query.js";
@@ -13,7 +14,7 @@ db.once("open", () => {
 });
 
 const app = express();
-
+app.use(cors());
 app.use(express.json());
 app.use("/document", documentUploadRoutes);
 app.use("/upload", pdfUploadRoutes);

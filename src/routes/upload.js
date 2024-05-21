@@ -9,7 +9,8 @@ const upload = multer();
 const router = express.Router();
 
 router.post("/", upload.single('pdf'), async (req, res) => {
-    console.log('check req', req.file);
+    let { user_id } = req.body;
+    console.log('check user id', user_id);
     try {
       if (!req.file) {
         return res.status(400).json({ error: 'No file was uploaded.' });
@@ -18,10 +19,11 @@ router.post("/", upload.single('pdf'), async (req, res) => {
       const pdfFile = req.file;
       console.log('check pdf file', pdfFile);
       const text = await processPDFStream(pdfFile.buffer);
-      const embedding = await createEmbedding(text);
+      // const embedding = await createEmbedding(text);
       const newDoc = new UploadedDocument({
         description: text,
-        embedding: embedding,
+        // embedding: embedding,
+        user_id:user_id
       });
   
       const savedDoc = await newDoc.save();

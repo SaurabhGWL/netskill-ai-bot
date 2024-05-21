@@ -6,7 +6,7 @@ import db from "../db/MongoDB.js";
 
 router.post("/", async (req, res) => {
   try {
-    const { query } = req.body;
+    const { query, user_id } = req.body;
 
     // console.log(query);
     const embedding = await createEmbedding(query);
@@ -15,29 +15,41 @@ router.post("/", async (req, res) => {
       try {
         const collectionName = "uploadeddocuments";
         const collection = db.collection(collectionName);
-        console.log('check collection name', collection);
+        // const documents = await collection
+        //   .aggregate([
+        //     {
+        //       $search: {
+        //         knnBeta: {
+        //           vector: embedding,
+        //           path: "embedding",
+        //           k: 2,
+        //         },
+        //       },
+        //     },
+        //     {
+        //       $project: {
+        //         description: 1,
+        //         score: { $meta: "searchScore" },
+        //       },
+        //     },
+        //   ])
+        //   .toArray();
         const documents = await collection
-          .aggregate([
-            {
-              $search: {
-                knnBeta: {
-                  vector: embedding,
-                  // path is the path to the embedding field in the mongodb collection documentupload
-                  path: "embedding",
-                  // change k to the number of documents you want to be returned
-                  k: 2,
-                },
-              },
+        .aggregate([
+          {
+            $match: {
+              user_id: user_id,
             },
-            {
-              $project: {
-                description: 1,
-                score: { $meta: "searchScore" },
-              },
+          },
+         
+          {
+            $project: {
+              description: 1,
+              score: { $meta: "searchScore" },
             },
-          ])
-          .toArray();
-        console.log('here is the documents', documents);
+          },
+        ])
+        .toArray();
         return documents;
       } catch (err) {
         console.error(err,'i am here');
@@ -49,16 +61,16 @@ router.post("/", async (req, res) => {
     //console.log("similarDocuments: ", similarDocuments);
 
     // gets the document with the highest score
-    const highestScoreDoc = similarDocuments.reduce((highest, current) => {
-      return highest.score > current.score ? highest : current;
-    });
 
-    //console.log("highestScoreDoc", highestScoreDoc);
+    const highestScoreDoc = similarDocuments.length>0?similarDocuments.reduce((highest, current) => {
+      return highest.score > current.score ? highest : current;
+    }):{description:"search internet to answer the query"};
+
 
     const prompt = `Based on this context: ${highestScoreDoc.description} \n\n Query: ${query} \n\n Answer:`;
+    console.log("check promot", prompt);
 
     const answer = await PromptResponse(prompt);
-    console.log("answer: ", answer);
     res.send(answer);
   } catch (err) {
     res.status(500).json({

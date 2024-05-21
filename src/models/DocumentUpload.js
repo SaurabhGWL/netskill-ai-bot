@@ -6,6 +6,7 @@ const Schema = mongoose.Schema;
 const DocumentUploadSchema = new Schema({
   title: String,
   description: String,
+  user_id: String,
   fileName: String,
   uploadDate: {
     type: Date,
