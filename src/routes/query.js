@@ -6,7 +6,7 @@ import db from "../db/MongoDB.js";
 
 router.post("/", async (req, res) => {
   try {
-    const { query, user_id } = req.body;
+    const { query, user_id, user } = req.body;
 
     // console.log(query);
     const embedding = await createEmbedding(query);
@@ -15,26 +15,29 @@ router.post("/", async (req, res) => {
       try {
         const collectionName = "uploadeddocuments";
         const collection = db.collection(collectionName);
-        // const documents = await collection
-        //   .aggregate([
-        //     {
-        //       $search: {
-        //         knnBeta: {
-        //           vector: embedding,
-        //           path: "embedding",
-        //           k: 2,
-        //         },
-        //       },
-        //     },
-        //     {
-        //       $project: {
-        //         description: 1,
-        //         score: { $meta: "searchScore" },
-        //       },
-        //     },
-        //   ])
-        //   .toArray();
-        const documents = await collection
+        const documents = user?
+        await collection
+          .aggregate([
+            {
+              $search: {
+                knnBeta: {
+                  vector: embedding,
+                  path: "embedding",
+                  k: 2,
+                },
+              },
+            },
+            {
+              $project: {
+                description: 1,
+                score: { $meta: "searchScore" },
+              },
+            },
+          ])
+          .toArray()
+          :
+        user_id ? 
+        await collection
         .aggregate([
           {
             $match: {
@@ -49,7 +52,10 @@ router.post("/", async (req, res) => {
             },
           },
         ])
-        .toArray();
+        .toArray()
+        :
+        []
+        ;
         return documents;
       } catch (err) {
         console.error(err,'i am here');
@@ -57,8 +63,6 @@ router.post("/", async (req, res) => {
     }
 
     const similarDocuments = await findSimilarDocuments(embedding);
-
-    //console.log("similarDocuments: ", similarDocuments);
 
     // gets the document with the highest score
 
@@ -68,7 +72,7 @@ router.post("/", async (req, res) => {
 
 
     const prompt = `Based on this context: ${highestScoreDoc.description} \n\n Query: ${query} \n\n Answer:`;
-    console.log("check promot", prompt);
+    console.log("check prompt", prompt);
 
     const answer = await PromptResponse(prompt);
     res.send(answer);
