@@ -1,0 +1,217 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Netskill",
+    "description": "This is the collection of API's created for Netskill",
+    "contact": {
+      "email": "saurab.kumar@goodworklabs.com"
+    },
+    "version": "1.0.1"
+  },
+  "servers": [
+    {
+      "url": "https://netskill-ai-bot.onrender.com/"
+    }
+  ],
+  "tags": [
+    {
+      "name": "ai chatbot",
+      "description": "RAG model",
+      "externalDocs": {
+        "description": "Find out more about our it",
+        "url": "https://help.openai.com/en/articles/8868588-retrieval-augmented-generation-rag-and-semantic-search-for-gpts"
+      }
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "ai chatbot"
+        ],
+        "summary": "Returns the status of the api",
+        "description": "Check if deployed api is correctly working",
+        "responses": {
+          "200": {
+            "description": "api working",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "api is working"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/update-knowledge": {
+      "post": {
+        "tags": [
+          "ai chatbot"
+        ],
+        "summary": "Webhook API",
+        "description": "called from webhook to update the knowledge base",
+        "operationId": "updateKnowledge",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  },
+                  "user_id": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "text",
+                  "user_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Document uploaded successfully!"
+                    },
+                    "document": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "422": {
+            "description": "Validation exception"
+          }
+        }
+      }
+    },
+    "/query": {
+      "post": {
+        "tags": [
+          "ai chatbot"
+        ],
+        "summary": "Api to ask chat gpt all the queries",
+        "description": "Returns an array of prompts",
+        "operationId": "queryPrompts",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "query": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "query"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "example": "we can request the format based on query"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "422": {
+            "description": "Validation exception"
+          }
+        }
+      }
+    },
+    "/upload": {
+      "post": {
+        "tags": [
+          "ai chatbot"
+        ],
+        "summary": "Upload PDF API",
+        "description": "Uploads a PDF file",
+        "operationId": "uploadPdf",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "pdf": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "user_id": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Upload successful"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "422": {
+            "description": "Validation exception"
+          }
+        }
+      }
+    }
+  }
+}

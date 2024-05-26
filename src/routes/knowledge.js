@@ -6,12 +6,13 @@ import { createEmbedding } from "../utils/createEmbedding.js";
 const router = express.Router();
 
 router.post("/", async (req, res) => {
-  const { text } = req.body;
+  const { text, user_id } = req.body;
   try {
     const embedding = await createEmbedding(text);
     const newDoc = new UploadedDocument({
       description: text,
       embedding: embedding,
+      user_id:user_id
     });
 
     const savedDoc = await newDoc.save();
