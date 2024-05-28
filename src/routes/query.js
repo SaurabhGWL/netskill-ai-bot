@@ -69,7 +69,7 @@ router.post("/", async (req, res) => {
       const embedding = await createEmbedding(query);
       similarDocuments = await findSimilarDocuments(embedding);
     } else if (user_id) {
-      similarDocuments = await findDocumentsByUserId(user_id);
+      similarDocuments = await findSimilarDocs(user_id);
     }
     // const similarDocuments = user
     //   ? await findSimilarDocuments(embedding)
