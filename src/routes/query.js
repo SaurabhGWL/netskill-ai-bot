@@ -88,13 +88,14 @@ router.post("/", async (req, res) => {
     let prompt = "";
     if (similarDocuments.length > 0) {
       prompt = similarDocuments.map((doc, index) => `User ${index + 1}: ${doc.description}`).join("\n\n");
-    } else {
-      prompt = "Search the internet to answer the query.";
-    }
+    } 
+    // else {
+    //   prompt = "Search the internet to answer the query.";
+    // }
     if (Array.isArray(prompt)) {
       prompt = prompt.join("\n\n");
     }
-    prompt = `Based on this context:\n${prompt}\n\nQuery: ${query}\n\nAnswer:`;
+    prompt = prompt?`Based on this context:\n${prompt}\n\nQuery: ${query}\n\nAnswer:`:query;
     console.log("check prompt", prompt);
     const answer = await PromptResponse(prompt);
     res.send(answer);
