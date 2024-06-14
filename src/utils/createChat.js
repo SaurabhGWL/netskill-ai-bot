@@ -25,12 +25,11 @@ async function PromptResponse(prompt) {
     messages: [
       {
         role: "system",
-        content: "You are a helpful assistant designed to output JSON.",
+        content: "You are a helpful assistant",
       },
       { role: "user", content: prompt },
     ],
     model: 'gpt-4o',
-    response_format: { type: "json_object" }
   })
 
   return response?.choices[0].message.content
