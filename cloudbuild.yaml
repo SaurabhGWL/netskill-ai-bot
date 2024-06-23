@@ -1,6 +1,6 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/$PROJECT_ID/my-image', '.']
+  args: ['build', '-t', 'gcr.io/netskill-423918/netskill-bot-v2', '.']
 
 images:
-- 'gcr.io/$PROJECT_ID/my-image'
+- 'gcr.io/netskill-423918/netskill-bot-v2'
